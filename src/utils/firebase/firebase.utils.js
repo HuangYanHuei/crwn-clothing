@@ -4,7 +4,8 @@ import {
   signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from 'firebase/auth'
 
 import {
@@ -26,14 +27,19 @@ const firebaseConfig = {
 //Firestore 初始化
 const firebaseApp = initializeApp(firebaseConfig);
 
-const provider = new GoogleAuthProvider()
+const googleProvider = new GoogleAuthProvider()
 
-provider.getCustomParameters({
+googleProvider.getCustomParameters({
   prompt: "select_account"
 })
 
 export const auth = getAuth()
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
+//彈出視窗的方法
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider)
+//不彈出的方法
+export const signInWithGoogleRedirect = () =>
+  signInWithRedirect(auth, googleProvider)
 
 export const db = getFirestore()
 
@@ -65,8 +71,14 @@ export const createUserDocumentFromAuth = async (
   return userDocRef
 }
 
-export const createAuthUserWithEmailAndPasswor = async (email, password) => {
+export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password)
+}
+
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+
+  return await signInWithEmailAndPassword(auth, email, password)
 }
